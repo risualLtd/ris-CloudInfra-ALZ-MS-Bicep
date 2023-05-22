@@ -1,0 +1,36 @@
+name: ALZ GitHub Actions deployment pipeline
+
+on: [workflow_dispatch]
+
+env:
+  ManagementGroupPrefix: "alz"
+  TopLevelManagementGroupDisplayName: "Azure Landing Zones"
+  Location: "eastus"
+  LoggingSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  LoggingResourceGroupName: "alz-logging"
+  HubNetworkSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  HubNetworkResourceGroupName: "Hub_Networking_POC"
+  RoleAssignmentManagementGroupId: "alz-platform"
+  SpokeNetworkSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  SpokeNetworkResourceGroupName: "Spoke_Networking_POC"
+  runNumber: ${{ github.run_number }}
+
+jobs:
+  bicep_tenant_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      - name: Az CLI Deploy Management Groups
+        id: create_mgs
+        shell: bash
+        run: |
+            az deployment tenant create --template-file infra-as-code/bicep/modules/managementGroups/managementGroups.bicep --parameters parTopLevelManagementGroupPrefix=${{ env.ManagementGroupPrefix }} parTopLevelManagementGroupDisplayName="${{ env.TopLevelManagementGroupDisplayName }}" --location ${{ env.Location }} --name create_mgs-${{ env.runNumber }}
