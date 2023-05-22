@@ -1,0 +1,34 @@
+name: ALZ GitHub Actions deployment pipeline - Custom Policy Definitions
+
+on: [workflow_dispatch]
+
+env:
+  ManagementGroupPrefix: "n4dt"
+  Location: "uksouth"
+  runNumber: ${{ github.run_number }}
+
+jobs:
+  bicep_tenant_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      - name: Deploy Custom Policy Definitions
+        id: create_policy_defs
+        uses: azure/arm-deploy@v1
+        with:
+          scope: managementgroup
+          managementGroupId: ${{ env.ManagementGroupPrefix }}
+          region: ${{ env.Location }}
+          template: infra-as-code/bicep/modules/policy/definitions/customPolicyDefinitions.bicep
+          parameters: infra-as-code/bicep/modules/policy/definitions/parameters/customPolicyDefinitions.parameters.all.json
+          deploymentName: create_policy_defs-${{ env.runNumber }}
+          failOnStdErr: false
