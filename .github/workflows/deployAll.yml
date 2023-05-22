@@ -3,14 +3,14 @@ name: ALZ GitHub Actions deployment pipeline
 on: [workflow_dispatch]
 
 env:
-  ManagementGroupPrefix: "alz"
-  TopLevelManagementGroupDisplayName: "Azure Landing Zones"
-  Location: "eastus"
+  ManagementGroupPrefix: "n4dt"
+  TopLevelManagementGroupDisplayName: "Node4 Digital Test"
+  Location: "uksouth"
   LoggingSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   LoggingResourceGroupName: "alz-logging"
   HubNetworkSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   HubNetworkResourceGroupName: "Hub_Networking_POC"
-  RoleAssignmentManagementGroupId: "alz-platform"
+  RoleAssignmentManagementGroupId: "n4dt-platform"
   SpokeNetworkSubId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   SpokeNetworkResourceGroupName: "Spoke_Networking_POC"
   runNumber: ${{ github.run_number }}
